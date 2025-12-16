@@ -201,21 +201,6 @@ export default function PlayerPage() {
                   >
                     ¡Bingo!
                   </button>
-                  {roomState?.drawnNumbers?.length ? (
-                    <div className="mt-3 space-y-1">
-                      <p className="text-xs text-slate-600">Números sacados</p>
-                      <div className="flex flex-wrap gap-1">
-                        {roomState.drawnNumbers.map((n) => (
-                          <span
-                            key={`${n.letter}-${n.value}-${n.drawnAt}`}
-                            className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-700 text-white"
-                          >
-                            {n.letter}-{n.value}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
                 </>
               )}
 
@@ -231,6 +216,22 @@ export default function PlayerPage() {
                   />
                 </div>
               )}
+
+              {roomState?.state === "playing" && roomState?.drawnNumbers?.length ? (
+                <div className="mt-4 space-y-1">
+                  <p className="text-xs text-slate-600">Números sacados</p>
+                  <div className="flex flex-wrap gap-1">
+                    {roomState.drawnNumbers.map((n) => (
+                      <span
+                        key={`${n.letter}-${n.value}-${n.drawnAt}`}
+                        className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-700 text-white"
+                      >
+                        {n.letter}-{n.value}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
 
               {roomState?.state === "finished" && (
                 <div className="mt-4 p-3 rounded-lg border border-emerald-300 bg-emerald-50 text-center">

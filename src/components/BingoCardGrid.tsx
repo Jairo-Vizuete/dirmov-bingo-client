@@ -54,8 +54,8 @@ export function BingoCardGrid({
               // Aplicar resaltado sutil solo si:
               // - Es parte del patrón
               // - No está marcada
-              // - No tiene el efecto de número dibujado
-              const hasPatternHighlight = isPatternCell && !isMarked && !hasDrawnEffect;
+              // (Mantener el resaltado incluso si el número fue dibujado)
+              const hasPatternHighlight = isPatternCell && !isMarked;
 
               const handleClick = () => {
                 if (disabled || !onToggleCell || isCenter) return;
