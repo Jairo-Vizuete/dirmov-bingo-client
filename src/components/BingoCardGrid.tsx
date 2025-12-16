@@ -1,12 +1,14 @@
 'use client';
 
 import { MyCard, BingoNumber } from '../store/bingoStore';
+import { getPattern } from '../lib/alphabet-patterns';
 
 interface BingoCardGridProps {
   card: MyCard;
   onToggleCell?: (row: number, col: number) => void;
   disabled?: boolean;
   drawnNumbers?: BingoNumber[];
+  selectedLetter?: string | null;
 }
 
 export function BingoCardGrid({
@@ -14,7 +16,11 @@ export function BingoCardGrid({
   onToggleCell,
   disabled,
   drawnNumbers = [],
+  selectedLetter,
 }: BingoCardGridProps) {
+  // Obtener el patrón de la letra seleccionada
+  const pattern = getPattern(selectedLetter || null);
+
   // Función helper para verificar si un valor está en los números dibujados
   const isDrawn = (value: number | null): boolean => {
     if (value === null) return false;
@@ -41,6 +47,15 @@ export function BingoCardGrid({
               const isMarked = card.marked[rowIndex][colIndex] || isCenter;
               const label = isCenter ? 'FREE' : value ?? '';
               const hasDrawnEffect = isDrawn(value);
+              
+              // Verificar si esta celda forma parte del patrón de la letra seleccionada
+              const isPatternCell = pattern && pattern[rowIndex][colIndex];
+              
+              // Aplicar resaltado sutil solo si:
+              // - Es parte del patrón
+              // - No está marcada
+              // - No tiene el efecto de número dibujado
+              const hasPatternHighlight = isPatternCell && !isMarked && !hasDrawnEffect;
 
               const handleClick = () => {
                 if (disabled || !onToggleCell || isCenter) return;
@@ -66,6 +81,8 @@ export function BingoCardGrid({
                         ? 'bg-amber-100 text-amber-800 border-amber-400 shadow-md font-bold'
                         : isMarked
                         ? 'bg-emerald-500 text-white border-emerald-600 shadow-md'
+                        : hasPatternHighlight
+                        ? 'bg-gradient-to-br from-green-100 to-emerald-200 text-slate-900 border-green-400 border-dashed'
                         : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50 hover:border-emerald-400',
                       disabled && !isMarked ? 'opacity-70 cursor-default' : '',
                     ].join(' ')}

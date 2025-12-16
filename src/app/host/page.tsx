@@ -7,6 +7,7 @@ import { BingoBall } from "../../components/BingoBall";
 
 export default function HostPage() {
   const [localName, setLocalName] = useState("");
+  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const {
     connectAsHost,
     roomState,
@@ -110,10 +111,57 @@ export default function HostPage() {
             </section>
 
             <section className="p-4 rounded-lg bg-white border border-slate-200 shadow-md space-y-3">
+              {roomState?.state === "waiting" && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-700">
+                    Selecciona la letra del patrón:
+                  </p>
+                  <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
+                    {Array.from({ length: 26 }, (_, i) => {
+                      const letter = String.fromCharCode(65 + i); // A-Z
+                      const isSelected = selectedLetter === letter;
+                      return (
+                        <button
+                          key={letter}
+                          type="button"
+                          onClick={() => setSelectedLetter(letter)}
+                          className={`
+                            py-2 px-3 rounded-md text-sm font-semibold transition-colors
+                            ${
+                              isSelected
+                                ? "bg-emerald-500 text-white shadow-md"
+                                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                            }
+                          `}
+                        >
+                          {letter}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {(roomState?.state === "playing" || roomState?.state === "finished") &&
+                roomState?.selectedLetter && (
+                  <div className="p-2 rounded-md bg-emerald-50 border border-emerald-200">
+                    <p className="text-sm text-slate-600">
+                      Patrón seleccionado:{" "}
+                      <span className="font-bold text-emerald-700 text-lg">
+                        {roomState.selectedLetter}
+                      </span>
+                    </p>
+                  </div>
+                )}
+
               <div className="flex flex-wrap gap-2">
                 <button
-                  onClick={() => startGame()}
-                  disabled={roomState?.state !== "waiting"}
+                  onClick={() => {
+                    if (selectedLetter) {
+                      startGame(selectedLetter);
+                    }
+                  }}
+                  disabled={roomState?.state !== "waiting" || !selectedLetter}
                   className="flex-1 min-w-[120px] py-2 rounded-md bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-300 disabled:text-slate-500 text-white font-semibold transition-colors shadow-md hover:shadow-lg disabled:shadow-none"
                 >
                   Iniciar juego

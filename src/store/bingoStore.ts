@@ -23,6 +23,7 @@ export interface PublicRoomState {
   players: PublicPlayerView[];
   state: GameState;
   drawnNumbers: BingoNumber[];
+  selectedLetter: string | null;
   winnerId?: string;
 }
 
@@ -55,7 +56,7 @@ interface BingoStoreState {
   setPlayerName: (name: string) => void;
   connectAsHost: (name: string) => void;
   connectAsPlayer: (name: string) => void;
-  startGame: () => void;
+  startGame: (selectedLetter: string) => void;
   drawNumber: () => void;
   claimBingo: () => void;
   restartGame: () => void;
@@ -253,9 +254,9 @@ export const useBingoStore = create<BingoStoreState>((set, get) => {
       socket.emit('joinAsPlayer', { name });
     },
 
-    startGame: () => {
+    startGame: (selectedLetter: string) => {
       const socket = getSocket();
-      socket.emit('startGame');
+      socket.emit('startGame', { selectedLetter });
     },
 
     drawNumber: () => {

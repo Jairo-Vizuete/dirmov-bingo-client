@@ -157,6 +157,17 @@ export default function PlayerPage() {
                   </span>
                 )}
               </div>
+              {(roomState?.state === "playing" || roomState?.state === "finished") &&
+                roomState?.selectedLetter && (
+                  <div className="p-2 rounded-md bg-emerald-50 border border-emerald-200">
+                    <p className="text-sm text-slate-600">
+                      Patrón:{" "}
+                      <span className="font-bold text-emerald-700 text-lg">
+                        {roomState.selectedLetter}
+                      </span>
+                    </p>
+                  </div>
+                )}
               <p className="text-sm text-slate-600">
                 Tú:{" "}
                 <span className="font-semibold text-slate-900">
@@ -216,6 +227,7 @@ export default function PlayerPage() {
                     onToggleCell={markCell}
                     disabled={roomState?.state !== "playing"}
                     drawnNumbers={roomState?.drawnNumbers || []}
+                    selectedLetter={roomState?.selectedLetter || null}
                   />
                 </div>
               )}
